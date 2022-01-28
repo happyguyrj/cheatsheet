@@ -1,6 +1,37 @@
 General
 - https://techinterviewhandbook.org/
 
+Resume
+- https://www.youtube.com/watch?v=ddl2a3_TNUI
+    - Linkedin SEO optimized
+        - Linkedin is longer version of resume
+        - example
+            - https://www.linkedin.com/in/guptanikita16/
+    - STAR
+    - quantificatoin
+    - small sentences
+- Ask interviewers what to expect in interviews/list of resources
+- Ask salary bandwidth
+- Do not quote salary in first call
+- Do not underestimate yourself, do research - ask someone working on that role
+- Resume audience
+    - recruiters
+    - hiring manager
+    - interviewer (engineer)
+- Less is more
+    - be concise
+    - try to make one page resume
+    - less formatting, better is it
+- Avoid exaggerating
+- highlight strengths, not weaknesses (not nescessarily to be in chronological order)
+- should be understandable to layman person
+- get feedback on resume
+- work on building up content
+- do not write what you do not know
+- do not make spelling grammer mistakes
+- do not write a monologue
+- do not add a picture of yourself
+- do not add skills level
 
 System Design
 - Design Patterns
