@@ -65,3 +65,21 @@ The Docker daemon receives the command from the client and manages Docker object
     - are file systems that operate by creating layers, making them very lightweight and fast
 Docker Engine combines the namespaces, cgroups, and UnionFS into a wrapper called a container format. The default container format is libcontainer
 
+##Docker command
+Below are some useful Docker commands
+- Stopping a running image
+```
+docker stop <id-of-image>
+```
+- Starting an image which is not running
+```
+docker start <id-of-image>
+```
+- Removing an image from docker
+```
+docker rmi <id-of-image>
+```
+- Removing a container from docker
+```
+docker rm <id-of-container>
+```
