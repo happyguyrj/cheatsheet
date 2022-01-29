@@ -3,7 +3,8 @@ Docker
 - use OS-level virtualisation
 - build, share, and run applications with containers
 
-Containerisation
+
+Why Containerisation?
 - Flexible- complexity of application is not a concern
 - Lightweight- Containers leverage and share the host kernel, making them much more efficient in terms of system resources than virtual machines
 - Portable
@@ -32,7 +33,13 @@ Containers vs virtual machines
 - Dependency
     - Docker solves the dependency problem by keeping the dependency contained inside the containers. It unites developers against dependency of their project.
 
-![image](https://user-images.githubusercontent.com/15718435/151668943-67df5209-0f07-439e-b984-2da527335bf2.png)
-![image](https://user-images.githubusercontent.com/15718435/151668946-29a55a30-ab43-4f72-bafb-8a8a4d4d34e0.png)
+![image](https://user-images.githubusercontent.com/15718435/151669113-56d7bcbf-d533-4701-9ba0-5522e3cde4f9.png)
+
+
+![image](https://user-images.githubusercontent.com/15718435/151669127-05caf40b-15e6-4502-8af7-576c65f63a20.png)
+
+
+![image](https://user-images.githubusercontent.com/15718435/151669134-105c1185-403c-4d16-a059-af579f68fa5f.png)
+
 
 
