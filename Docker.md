@@ -12,6 +12,7 @@
 
 ## Why Containerisation?
 - Portable
+- Standard
 - Loosely coupled
 - Scalable
 - Flexible- complexity of application is not a concern
@@ -19,6 +20,12 @@
 - Secure- Containers apply aggressive constraints and isolations to processes without any configuration required on the part of the user.
 
 ## Containers vs virtual machines
+### VIRTUAL MACHINES
+Virtual machines (VMs) are an abstraction of physical hardware turning one server into many servers. The hypervisor allows multiple VMs to run on a single machine. Each VM includes a full copy of an operating system, the application, necessary binaries and libraries - taking up tens of GBs. VMs can also be slow to boot.
+
+###CONTAINERS
+Containers are an abstraction at the app layer that packages code and dependencies together. Multiple containers can run on the same machine and share the OS kernel with other containers, each running as isolated processes in user space. Containers take up less space than VMs (container images are typically tens of MBs in size), can handle more applications and require fewer VMs and Operating systems.
+
 - Kernel
     - A container runs natively on Linux and shares the kernel of the host machine with other containers. It runs a discrete process, taking no more memory than any other executable, making it lightweight.
     - By contrast, a virtual machine (VM) runs a full-blown “guest” operating system with virtual access to host resources through a hypervisor. In general, VMs incur a lot of overhead beyond what is being consumed by your application logic.
@@ -51,6 +58,13 @@ Docker has a docker engine, which is the heart of Docker system. It is a client-
 - A REST API which is used to communicate between the client( Docker CLI ) and the server ( Docker Daemon )
 The Docker daemon receives the command from the client and manages Docker objects, such as images, containers, networks, and volumes. The Docker client and daemon can either run on the same system, or you can connect a Docker client to a remote Docker daemon. They can communicate using a REST API, over UNIX sockets or a network interface.
 
+Docker which runs in the same operating system as its host. This allows it to share a lot of the host operating system resources. Also, it uses a layered filesystem (AuFS) and manages networking.
+
+#### AuFs
+- layered file system
+- have a read only part and a write part which are merged together.
+- One could have the common parts of the operating system as read only (and shared amongst all of your containers) and then give each container its own mount for writing.
+
 ## Technology Used in Docker
 - programming language used in Docker is GO
 - Docker takes advantage of various features of Linux kernel like namespaces and cgroups.
@@ -66,6 +80,9 @@ Docker Engine combines the namespaces, cgroups, and UnionFS into a wrapper calle
 
 ## Creating Our First Docker Application
 - Create a Dockerfile in your application
+
+#### OS snapshot
+You start with a base image, and then make your changes, and commit those changes using docker, and it creates an image. This image contains only the differences from the base. When you want to run your image, you also need the base, and it layers your image on top of the base using a layered file system: as mentioned above, Docker uses AuFS. AuFS merges the different layers together and you get what you want; you just need to run it. You can keep adding more and more images (layers) and it will continue to only save the diffs. Since Docker typically builds on top of ready-made images from a registry, you rarely have to "snapshot" the whole OS yourself.
 ```
 FROM python:3.8-alpine3.11
 
@@ -107,3 +124,20 @@ docker rmi <id-of-image>
 ```
 docker rm <id-of-container>
 ```
+
+## How does virtualization work at a low level?
+- VM manager takes over the CPU ring 0 (or the "root mode" in newer CPUs) and intercepts all privileged calls made by the guest OS to create the illusion that the guest OS has its own hardware.
+- The net effect is that virtualization allows you to run two completely different OSes on the same hardware. Each guest OS goes through all the processes of bootstrapping, loading kernel, etc. You can have very tight security.
+- For example, a guest OS can't get full access to the host OS or other guests and mess things up.
+
+## How do containers work at a low level?
+- Around 2006, people including some of the employees at Google implemented a new kernel level feature called namespaces
+- One function of the OS is to allow sharing of global resources like network and disks among processes. What if these global resources were wrapped in namespaces so that they are visible only to those processes that run in the same namespace?
+- This provides a kind of virtualization and isolation for global resources.
+- Each container runs in its own namespace but uses exactly the same kernel as all other containers. The isolation happens because the kernel knows the namespace that was assigned to the process and during API calls it makes sure that the process can only access resources in its own namespace.
+
+
+Ref:
+https://medium.com/@kmdkhadeer/docker-get-started-9aa7ee662cea
+https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine/16048358#16048358
+https://www.docker.com/resources/what-container#/package_software
