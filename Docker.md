@@ -23,7 +23,7 @@
 ### VIRTUAL MACHINES
 Virtual machines (VMs) are an abstraction of physical hardware turning one server into many servers. The hypervisor allows multiple VMs to run on a single machine. Each VM includes a full copy of an operating system, the application, necessary binaries and libraries - taking up tens of GBs. VMs can also be slow to boot.
 
-###CONTAINERS
+### CONTAINERS
 Containers are an abstraction at the app layer that packages code and dependencies together. Multiple containers can run on the same machine and share the OS kernel with other containers, each running as isolated processes in user space. Containers take up less space than VMs (container images are typically tens of MBs in size), can handle more applications and require fewer VMs and Operating systems.
 
 - Kernel
@@ -79,51 +79,50 @@ Docker which runs in the same operating system as its host. This allows it to sh
 Docker Engine combines the namespaces, cgroups, and UnionFS into a wrapper called a container format. The default container format is libcontainer
 
 ## Creating Our First Docker Application
-- Create a Dockerfile in your application
-
 #### OS snapshot
 You start with a base image, and then make your changes, and commit those changes using docker, and it creates an image. This image contains only the differences from the base. When you want to run your image, you also need the base, and it layers your image on top of the base using a layered file system: as mentioned above, Docker uses AuFS. AuFS merges the different layers together and you get what you want; you just need to run it. You can keep adding more and more images (layers) and it will continue to only save the diffs. Since Docker typically builds on top of ready-made images from a registry, you rarely have to "snapshot" the whole OS yourself.
-```
-FROM python:3.8-alpine3.11
+- Create a Dockerfile in your application
+    ```
+    FROM python:3.8-alpine3.11
 
-# update apk repo
-RUN echo "http://dl-4.alpinelinux.org/alpine/v3.11/main" >> /etc/apk/repositories && \
-    echo "http://dl-4.alpinelinux.org/alpine/v3.11/community" >> /etc/apk/repositories
+    # update apk repo
+    RUN echo "http://dl-4.alpinelinux.org/alpine/v3.11/main" >> /etc/apk/repositories && \
+        echo "http://dl-4.alpinelinux.org/alpine/v3.11/community" >> /etc/apk/repositories
 
-# install chromedriver
-RUN apk --no-cache add chromium chromium-chromedriver
+    # install chromedriver
+    RUN apk --no-cache add chromium chromium-chromedriver
 
-# install selenium
-RUN pip install selenium pytest
-```
+    # install selenium
+    RUN pip install selenium pytest
+    ```
 - Deploying Your Application
     - create a docker image.
-    ```
-    docker build -t <name to give to your image>
-    ```
+        ```
+        docker build -t <name to give to your image>
+        ```
     - Convert Docker image of the Application into a Running container.
-    ```
-    docker run -p 9090:80 <name to give to your container>
-    ```
+        ```
+        docker run -p 9090:80 <name to give to your container>
+        ```
 
 ## Docker command
 Below are some useful Docker commands
 - Stopping a running image
-```
-docker stop <id-of-image>
-```
+    ```
+    docker stop <id-of-image>
+    ```
 - Starting an image which is not running
-```
-docker start <id-of-image>
-```
+    ```
+    docker start <id-of-image>
+    ```
 - Removing an image from docker
-```
-docker rmi <id-of-image>
-```
+    ```
+    docker rmi <id-of-image>
+    ```
 - Removing a container from docker
-```
-docker rm <id-of-container>
-```
+    ```
+    docker rm <id-of-container>
+    ```
 
 ## How does virtualization work at a low level?
 - VM manager takes over the CPU ring 0 (or the "root mode" in newer CPUs) and intercepts all privileged calls made by the guest OS to create the illusion that the guest OS has its own hardware.
