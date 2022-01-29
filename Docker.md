@@ -66,15 +66,52 @@ Docker which runs in the same operating system as its host. This allows it to sh
 - One could have the common parts of the operating system as read only (and shared amongst all of your containers) and then give each container its own mount for writing.
 
 ## Technology Used in Docker
-- programming language used in Docker is GO
-- Docker takes advantage of various features of Linux kernel like namespaces and cgroups.
-- namespaces
+Docker takes advantage of various features of Linux kernel like namespaces and cgroups.
+### namespaces
+    - real magic behind containers
     - to provide isolated workspace called containers
     - Each aspect of a container runs in a separate namespace and its access is limited to that namespace
-- cgroups( control groups )
+    - kinds of namespace
+        - pid
+            - Each pid namespace has its own process numbering.
+            - Different pid namespaces form a hierarchy
+            - the kernel keeps track of which namespace created which other
+            - A “parent” namespace can see its children namespaces, and it can affect them (for instance, with signals); but a child namespace cannot do anything to its parent namespace. As a consequence:
+                - each pid namespace has its own “PID 1” init-like process;
+                - processes living in a namespace cannot affect processes living in parent or sibling namespaces with system calls like kill or ptrace, since process ids are meaningful only inside a given namespace;
+                - if a pseudo-filesystem like proc is mounted by a process within a pid namespace, it will only show the processes belonging to the namespace;
+                - since the numbering is different in each namespace, it means that a process in a child namespace will have multiple PIDs: one in its own namespace, and a different PID in its parent namespace.
+                    - the top-level pid namespace, you will be able to see all processes running in all namespaces, but with different PIDs. Of course, a process can have more than 2 PIDs if there are more than two levels of hierarchy in the namespaces.
+        - net
+            - if you want to run e.g. a different Apache in each container, you will have a problem: there can be only one process listening to port 80/tcp at a time. You could configure your instances of Apache to listen on different ports… or you could use the net namespace.
+            - net namespace is about networking
+            - Each different net namespace can have different network interfaces
+            - Even lo, the loopback interface supporting 127.0.0.1, will be different in each different net namespace.
+            - It is possible to create pairs of special interfaces, which will appear in two different net namespaces, and allow a net namespace to talk to the outside world.
+            - A typical container will have its own loopback interface (lo), as well as one end of such a special interface, generally named eth0. The other end of the special interface will be in the “original” namespace, and will bear a poetic name like veth42xyz0. It is then possible to put those special interfaces together within an Ethernet bridge (to achieve switching between containers), or route packets between them, etc. (If you are familiar with the Xen networking model, this is probably no news to you!)
+            - Note that each net namespace has its own meaning for INADDR_ANY, a.k.a. 0.0.0.0; so when your Apache process binds to *:80 within its namespace, it will only receive connections directed to the IP addresses and interfaces of its namespace – thus allowing you, at the end of the day, to run multiple Apache instances, with their default configuration listening on port 80.
+            - In case you were wondering: each net namespace has its own routing table, but also its own iptables chains and rules.
+        - ipc
+            - IPC provides semaphores, message queues, and shared memory segments.
+            - While still supported by virtually all UNIX flavors, those features are considered by many people as obsolete, and superseded by POSIX semaphores, POSIX message queues, and mmap. Nonetheless, some programs – including PostgreSQL – still use IPC.
+            - each IPC resources are accessed through a unique 32-bits ID. IPC implement permissions on resources, but nonetheless, one application could be surprised if it failed to access a given resource because it has already been claimed by another process in a different container.
+            - Introduce the ipc namespace: processes within a given ipc namespace cannot access (or even see at all) IPC resources living in other ipc namespaces. And now you can safely run a PostgreSQL instance in each container without fearing IPC key collisions!
+        - mnt
+            - chroot, a mechanism allowing to sandbox a process (and its children) within a given directory.
+            - The mnt namespace takes that concept one step further.
+            - the mnt namespace deals with mountpoints
+            - Processes living in different mnt namespaces can see different sets of mounted filesystems – and different root directories. If a filesystem is mounted in a mnt namespace, it will be accessible only to those processes within that namespace; it will remain invisible for processes in other namespaces
+            - it allows to sandbox each container within its own directory, hiding other containers.
+            - Inspecting /proc/mounts in a container will show the mountpoints of all containers. Also, those mountpoints will be relative to the original namespace, which can give some hints about the layout of your system – and maybe confuse some applications which would rely on the paths in /proc/mounts.The mnt namespace makes the situation much cleaner, allowing each container to have its own mountpoints, and see only those mountpoints, with their path correctly translated to the actual root of the namespace.
+        - uts
+            - uts namespace deals with one little detail: the hostname that will be “seen” by a group of processes.
+            - Each uts namespace will hold a different hostname, and changing the hostname (through the sethostname system call) will only change it for processes running in the same namespace.
+
+### cgroups( control groups )
     - are used to limit and isolate the resource usage( CPU, memory, Disk I/O, network etc ) of a collection of processes.
     - allow Docker engine to share the available hardware resources to containers and optionally enforce limit and constraints.
-- UnionFS( Union file systems )
+
+### UnionFS( Union file systems )
     - are file systems that operate by creating layers, making them very lightweight and fast
 Docker Engine combines the namespaces, cgroups, and UnionFS into a wrapper called a container format. The default container format is libcontainer
 
@@ -140,3 +177,4 @@ Ref:
 https://medium.com/@kmdkhadeer/docker-get-started-9aa7ee662cea
 https://stackoverflow.com/questions/16047306/how-is-docker-different-from-a-virtual-machine/16048358#16048358
 https://www.docker.com/resources/what-container#/package_software
+http://web.archive.org/web/20150326185901/http://blog.dotcloud.com/under-the-hood-linux-kernels-on-dotcloud-part
