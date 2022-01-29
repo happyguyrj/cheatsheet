@@ -22,3 +22,6 @@ Containers vs virtual machines
 - Kernel
     - A container runs natively on Linux and shares the kernel of the host machine with other containers. It runs a discrete process, taking no more memory than any other executable, making it lightweight.
     - By contrast, a virtual machine (VM) runs a full-blown “guest” operating system with virtual access to host resources through a hypervisor. In general, VMs incur a lot of overhead beyond what is being consumed by your application logic.
+
+![image](https://user-images.githubusercontent.com/15718435/151668943-67df5209-0f07-439e-b984-2da527335bf2.png)
+![image](https://user-images.githubusercontent.com/15718435/151668946-29a55a30-ab43-4f72-bafb-8a8a4d4d34e0.png)
