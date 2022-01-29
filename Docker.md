@@ -3,21 +3,20 @@
 - use OS-level virtualisation
 - build, share, and run applications with containers
 
-
-## Why Containerisation?
-- Flexible- complexity of application is not a concern
-- Lightweight- Containers leverage and share the host kernel, making them much more efficient in terms of system resources than virtual machines
-- Portable
-- Loosely coupled
-- Scalable
-- Secure- Containers apply aggressive constraints and isolations to processes without any configuration required on the part of the user.
-
 ## Containers
 - is a standardised unit which can be created on the fly to deploy a particular application or environment
 - nothing but a running process, with some added encapsulation features applied to it in order to keep it isolated from the host and from other containers
 - private filesystem; this filesystem is provided by a Docker image
 - bundle their own software, libraries and configuration files
 - they can communicate with each other through well-defined channels
+
+## Why Containerisation?
+- Portable
+- Loosely coupled
+- Scalable
+- Flexible- complexity of application is not a concern
+- Lightweight- Containers leverage and share the host kernel, making them much more efficient in terms of system resources than virtual machines
+- Secure- Containers apply aggressive constraints and isolations to processes without any configuration required on the part of the user.
 
 ## Containers vs virtual machines
 - Kernel
@@ -64,6 +63,23 @@ The Docker daemon receives the command from the client and manages Docker object
 - UnionFS( Union file systems )
     - are file systems that operate by creating layers, making them very lightweight and fast
 Docker Engine combines the namespaces, cgroups, and UnionFS into a wrapper called a container format. The default container format is libcontainer
+
+## Creating Our First Docker Application
+- Create a Dockerfile in your application
+```
+FROM PHP:7.2-Apache
+COPY src/ /var/www/html/
+EXPOSE 80
+```
+- Deploying Your Application
+    - create a docker image.
+    ```
+    docker build -t <name to give to your image>
+    ```
+    - Convert Docker image of the Application into a Running container.
+    ```
+    docker run -p 9090:80 <name to give to your container>
+    ```
 
 ## Docker command
 Below are some useful Docker commands
