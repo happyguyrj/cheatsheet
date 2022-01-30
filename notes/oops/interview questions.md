@@ -26,7 +26,7 @@ public void athlete() {
     int athleteAge;
 }
 ```
-
+![image](https://user-images.githubusercontent.com/15718435/151692820-0da40dae-1cec-49ff-bf08-4e3baf419685.png)
 
 
 #####
