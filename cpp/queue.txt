@@ -1,6 +1,0 @@
-The queue gquiz is : 	10	20	30
-
-gquiz.size() : 3
-gquiz.front() : 10
-gquiz.back() : 30
-gquiz.pop() : 	20	30
