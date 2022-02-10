@@ -245,4 +245,119 @@ Clustered indexes are indexes whose order of the rows in the database correspond
 The only difference between clustered and non-clustered indexes is that the database manager attempts to keep the data in the database in the same order as the corresponding keys appear in the clustered index.
 
 Clustering indexes can improve the performance of most query operations because they provide a linear-access path to data stored in the database
-https://www.interviewbit.com/sql-interview-questions/#
+
+## Data Integrity?
+- assurance of accuracy and consistency of data over its entire life-cycle
+
+## SQL Clause Order
+0. FROM
+1. JOIN
+2. WHERE
+3. GROUP BY
+4. HAVING: to filter records in combination with the GROUP BY clause. It is different from WHERE, since the WHERE clause cannot filter aggregated records.
+3. SELECT
+4. ORDER BY
+
+## Cursor
+- cursor is a control structure that allows for the traversal of records in a database
+- facilitates processing after traversal, such as retrieval, addition, and deletion of database records
+- can be viewed as a pointer to one row in a set of rows.
+```
+DECLARE @name VARCHAR(50)   /* Declare All Required Variables */
+DECLARE db_cursor CURSOR FOR   /* Declare Cursor Name*/
+SELECT name
+FROM myDB.students
+WHERE parent_name IN ('Sara', 'Ansh')
+OPEN db_cursor   /* Open cursor and Fetch data into @name */
+FETCH next
+FROM db_cursor
+INTO @name
+CLOSE db_cursor   /* Close the cursor and deallocate the resources */
+DEALLOCATE db_cursor
+```
+
+## Entities and Relationships
+### Entity
+- An entity can be a real-world object, either tangible or intangible, that can be easily identifiable
+- For example, in a college database, students, professors, workers, departments, and projects can be referred to as entities. Each entity has some associated properties that provide it an identity.
+
+### Relationships
+- Relations or links between entities that have something to do with each other.
+- For example - The employee's table in a company's database can be associated with the salary table in the same database.
+
+#### Types of relationship
+One-to-One - This can be defined as the relationship between two tables where each record in one table is associated with the maximum of one record in the other table.
+One-to-Many & Many-to-One - This is the most commonly used relationship where a record in a table is associated with multiple records in the other table.
+Many-to-Many - This is used in cases when multiple instances on both sides are needed for defining a relationship.
+Self-Referencing Relationships - This is used when a table needs to define a relationship with itself
+
+## View
+- virtual table based on the result-set of an SQL statement
+
+## User-defined function
+The user-defined functions in SQL are like functions in any other programming language that accept parameters, perform complex calculations, and return a value
+- Scalar Function: As explained earlier, user-defined scalar functions return a single scalar value.
+- Table-Valued Functions: User-defined table-valued functions return a table as output.
+
+## Stored Procedure
+- A stored procedure is a subroutine available to applications that access a relational database management system (RDBMS).
+- Such procedures are stored in the database data dictionary.
+- The sole disadvantage of stored procedure is that it can be executed nowhere except in the database and occupies more memory in the database server.
+- It also provides a sense of security and functionality as users who can't access the data directly can be granted access via stored procedures.
+```
+DELIMITER $$
+CREATE PROCEDURE FetchAllStudents()
+BEGIN
+SELECT *  FROM myDB.students;
+END $$
+DELIMITER ;
+```
+
+## OLTP
+- Online Transaction Processing
+- class of software applications capable of supporting transaction-oriented programs
+- ability to maintain concurrency. OLTP systems often follow a decentralized architecture to avoid single points of failure.
+- generally designed for a large audience of end-users who conduct short transactions
+- Queries involved in such databases are generally simple, need fast response times, and return relatively few records.
+- A number of transactions per second acts as an effective measure for such systems.
+
+## OLAP
+- Online Analytical Processing
+- are characterized by the relatively low frequency of online transactions
+- Queries are often too complex and involve a bunch of aggregations.
+- effectiveness measure relies highly on response time.
+- widely used for data mining or maintaining aggregated, historical data, usually in multi-dimensional schemas
+
+## PostgreSQL
+- enterprise-level, flexible, robust, open-source, and object-relational DBMS that supports flexible workloads along with handling concurrent users
+- Indexes are the inbuilt functions in PostgreSQL which are used by the queries to perform search more efficiently on a table in the database.
+
+## Partitioned tables
+- logical structures that are used for dividing large tables into smaller structures
+- used for effectively increasing the query performance while dealing with large database tables
+- To create a partition, a key called partition key which is usually a table column or an expression, and a partitioning method needs to be defined
+
+### Range Partitioning
+- partitioning based on a range of values
+
+### List Partitioning
+- partition based on a list of known values
+- used when we have a key with a categorical value.
+
+### Hash Partitioning
+- utilizes a hash function upon the partition key
+- when there are no specific requirements for data division and is used to access data individually
+
+## Is PostgreSQL compliant with ACID?
+Atomicity: This property ensures that the transaction is completed in all-or-nothing way.
+Consistency: This ensures that updates made to the database is valid and follows rules and restrictions.
+Isolation: This property ensures integrity of transaction that are visible to all other transactions.
+Durability: This property ensures that the committed transactions are stored permanently in the database.
+PostgreSQL is compliant with ACID properties
+
+## Write Ahead Logging
+Write Ahead Logging is a feature that increases the database reliability by logging changes before any changes are done to the database. This ensures that we have enough information when a database crash occurs by helping to pinpoint to what point the work has been complete and gives a starting point from the point where it was discontinued
+
+## Parallel Queries
+feature provided in PostgreSQL for devising query plans capable of exploiting multiple CPU processors to execute the queries faster
+
