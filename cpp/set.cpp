@@ -38,7 +38,11 @@ int main() {
     s1.insert(50);
 
     // only one 50 will be added to the set
-    s1.insert(50);
+    // The single element versions (1) return a pair, with its member pair::first set to an iterator
+    // pointing to either the newly inserted element or to the equivalent element already in the set.
+    // The pair::second element in the pair is set to true if a new element was inserted
+    // or false if an equivalent element already existed.
+    cout << s1.insert(50).second;
     s1.insert(10);
 
     printGSet(s1);
